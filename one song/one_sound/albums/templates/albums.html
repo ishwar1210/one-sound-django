@@ -1,0 +1,78 @@
+{% extends "base.html" %} {% load static %} {% block title %}One Sound - Latest
+Albums{% endblock title %} {% block content %}
+
+<!-- ##### Breadcumb Area Start ##### -->
+<section
+  class="breadcumb-area bg-img bg-overlay"
+  style="background-image: url('{% static 'img/bg-img/breadcumb3.jpg' %}')"
+>
+  <div class="bradcumbContent">
+    <p>See what’s new</p>
+    <h2>Latest Albums</h2>
+  </div>
+</section>
+<!-- ##### Breadcumb Area End ##### -->
+
+<!-- ##### Album Catagory Area Start ##### -->
+<section class="album-catagory section-padding-100-0">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div
+          class="browse-by-catagories catagory-menu d-flex flex-wrap align-items-center mb-70"
+        >
+            <div class="alphabet-filter">
+                <a href="{% url 'album_list' %}" class="active">Browse All</a>
+                <a href="{% url 'album_list' %}?letter=A">A</a>
+                <a href="{% url 'album_list' %}?letter=B">B</a>
+                <a href="{% url 'album_list' %}?letter=C">C</a>
+                <a href="{% url 'album_list' %}?letter=D">D</a>
+                <a href="{% url 'album_list' %}?letter=E">E</a>
+                <a href="{% url 'album_list' %}?letter=F">F</a>
+                <a href="{% url 'album_list' %}?letter=G">G</a>
+                <a href="{% url 'album_list' %}?letter=H">H</a>
+                <a href="{% url 'album_list' %}?letter=I">I</a>
+                <a href="{% url 'album_list' %}?letter=J">J</a>
+                <a href="{% url 'album_list' %}?letter=K">K</a>
+                <a href="{% url 'album_list' %}?letter=L">L</a>
+                <a href="{% url 'album_list' %}?letter=M">M</a>
+                <a href="{% url 'album_list' %}?letter=N">N</a>
+                <a href="{% url 'album_list' %}?letter=O">O</a>
+                <a href="{% url 'album_list' %}?letter=P">P</a>
+                <a href="{% url 'album_list' %}?letter=Q">Q</a>
+                <a href="{% url 'album_list' %}?letter=R">R</a>
+                <a href="{% url 'album_list' %}?letter=S">S</a>
+                <a href="{% url 'album_list' %}?letter=T">T</a>
+                <a href="{% url 'album_list' %}?letter=U">U</a>
+                <a href="{% url 'album_list' %}?letter=V">V</a>
+                <a href="{% url 'album_list' %}?letter=W">W</a>
+                <a href="{% url 'album_list' %}?letter=X">X</a>
+                <a href="{% url 'album_list' %}?letter=Y">Y</a>
+                <a href="{% url 'album_list' %}?letter=Z">Z</a>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row oneMusic-albums">
+      <!-- for django  -->
+      <!-- Single Album -->
+      {% for album in albums %}
+      <div class="col-12 col-sm-4 col-md-3 col-lg-2 single-album-item ">
+        <div class="single-album">
+          <img src="{{ album.album_image.url }}" alt="" />
+          <div class="album-info">
+            <a href="#">
+              <h5>{{ album.album_name }}</h5>
+            </a>
+            <p>{{ album.album_type }}</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<!-- ##### Album Catagory Area End ##### -->
+
+{% endblock content %}

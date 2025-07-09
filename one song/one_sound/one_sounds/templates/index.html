@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}One Sound{% endblock title %}
+{% block content %}
+    <!-- ##### Hero Area Start ##### -->
+    <section class="hero-area">
+        <div class="hero-slides owl-carousel">
+          <!-- Single Hero Slide -->
+          <div
+            class="single-hero-slide d-flex align-items-center justify-content-center"
+          >
+            <!-- Slide Img -->
+            <div
+              class="slide-img bg-img"
+              style="background-image: url({% static 'img/bg-img/bg-1.jpg' %})"
+            ></div>
+            <!-- Slide Content -->
+            <div class="container">
+              <div class="row">
+                <div class="col-12">
+                  <div class="hero-slides-content text-center">
+                    <h6 data-animation="fadeInUp" data-delay="100ms">
+                      Latest album
+                    </h6>
+                    <h2 data-animation="fadeInUp" data-delay="300ms">
+                      Beyond Time <span>Beyond Time</span>
+                    </h2>
+                    <a
+                      data-animation="fadeInUp"
+                      data-delay="500ms"
+                      href="#"
+                      class="btn oneMusic-btn mt-50"
+                      >Discover <i class="fa fa-angle-double-right"></i
+                    ></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Single Hero Slide -->
+          <div
+            class="single-hero-slide d-flex align-items-center justify-content-center"
+          >
+            <!-- Slide Img -->
+            <div
+              class="slide-img bg-img"
+              style="background-image:url({% static 'img/bg-img/bg-2.jpg' %})"
+            ></div>
+            <!-- Slide Content -->
+            <div class="container">
+              <div class="row">
+                <div class="col-12">
+                  <div class="hero-slides-content text-center">
+                    <h6 data-animation="fadeInUp" data-delay="100ms">
+                      Latest album
+                    </h6>
+                    <h2 data-animation="fadeInUp" data-delay="300ms">
+                      Colorlib Music <span>Colorlib Music</span>
+                    </h2>
+                    <a
+                      data-animation="fadeInUp"
+                      data-delay="500ms"
+                      href="#"
+                      class="btn oneMusic-btn mt-50"
+                      >Discover <i class="fa fa-angle-double-right"></i
+                    ></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ##### Hero Area End ##### -->
+
+      <!-- ##### Latest Albums Area Start ##### -->
+    <section class="latest-albums-area section-padding-100">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <div class="section-heading style-2">
+              <p>See what’s new</p>
+              <h2>Latest Albums</h2>
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-12 col-lg-9">
+            <div class="ablums-text text-center mb-70">
+              <p>
+                Nam tristique ex vel magna tincidunt, ut porta nisl finibus.
+                Vivamus eu dolor eu quam varius rutrum. Fusce nec justo id sem
+                aliquam fringilla nec non lacus. Suspendisse eget lobortis nisi,
+                ac cursus odio. Vivamus nibh velit, rutrum at ipsum ac,
+                dignissim iaculis ante. Donec in velit non elit pulvinar
+                pellentesque et non eros.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="albums-slideshow owl-carousel">
+              {% for album in albums %}
+              <!-- Single Album -->
+              <div class="single-album">
+                <img src="{{ album.album_image.url }}" alt="" />
+                <div class="album-info">
+                  <a href="#">
+                    <h5>{{ album.album_name }}</h5>
+                  </a>
+                  <p>{{ album.album_type }}</p>
+                </div>
+              </div>
+              
+              {% endfor %}
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ##### Latest Albums Area End ##### -->
+{% endblock content %}
