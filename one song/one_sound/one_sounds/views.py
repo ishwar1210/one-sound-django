@@ -6,3 +6,6 @@ def index(request):
     context = {"albums": Album.objects.all()}
     return render(request, 'index.html', context)
 
+def register(request):
+    return render(request, 'register.html')
+

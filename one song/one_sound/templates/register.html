@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}register{% endblock title %}
+
+{% block content %}
+  
+      <!-- ##### Breadcumb Area Start ##### -->
+      <section
+        class="breadcumb-area bg-img bg-overlay"
+        style="background-image: url('{% static 'img/bg-img/breadcumb3.jpg' %}')"
+      >
+        <div class="bradcumbContent">
+          <p>See what’s new</p>
+          <h2>Register</h2>
+        </div>
+      </section>
+      <!-- ##### Breadcumb Area End ##### -->
+  
+      <!-- ##### Login Area Start ##### -->
+      <section class="login-area section-padding-100">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-12 col-lg-8">
+              <div class="login-content">
+                <h3>Register</h3>
+                <!-- Login Form -->
+                <div class="login-form">
+                  <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                      <label for="id_username">Username:</label>
+                      <input
+                        type="text"
+                        name="username"
+                        id="id_username"
+                        class="form-control"
+                        value="{{ form.username.value|default_if_none:'' }}"
+                      />
+                      {% if form.username.errors %}
+                        <div class="error">{{ form.username.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                    <div class="form-group">
+                      <label for="id_first_name">First Name:</label>
+                      <input
+                        type="text"
+                        name="first_name"
+                        id="id_first_name"
+                        class="form-control"
+                        value="{{ form.first_name.value|default_if_none:'' }}"
+                      />
+                      {% if form.first_name.errors %}
+                        <div class="error">{{ form.first_name.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                    <div class="form-group">
+                      <label for="id_last_name">Last Name:</label>
+                      <input
+                        type="text"
+                        name="last_name"
+                        id="id_last_name"
+                        class="form-control"
+                        value="{{ form.last_name.value|default_if_none:'' }}"
+                      />
+                      {% if form.last_name.errors %}
+                        <div class="error">{{ form.last_name.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                    <div class="form-group">
+                      <label for="id_email">Email:</label>
+                      <input
+                        type="email"
+                        name="email"
+                        id="id_email"
+                        class="form-control"
+                        value="{{ form.email.value|default_if_none:'' }}"
+                      />
+                      {% if form.email.errors %}
+                        <div class="error">{{ form.email.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                    <div class="form-group">
+                      <label for="id_password">Password:</label>
+                      <input
+                        type="password"
+                        name="password"
+                        id="id_password"
+                        class="form-control"
+                      />
+                      {% if form.password.errors %}
+                        <div class="error">{{ form.password.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                    <div class="form-group">
+                      <label for="id_confirm_password">Confirm Password:</label>
+                      <input
+                        type="password"
+                        name="confirm_password"
+                        id="id_confirm_password"
+                        class="form-control"
+                      />
+                      {% if form.confirm_password.errors %}
+                        <div class="error">{{ form.confirm_password.errors.0 }}</div>
+                      {% endif %}
+                    </div>
+                    <button type="submit" class="btn oneMusic-btn mt-30">
+                      Register
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ##### Login Area End ##### -->
+
+
+{% endblock content %}
