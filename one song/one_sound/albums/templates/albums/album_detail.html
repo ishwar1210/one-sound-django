@@ -1,0 +1,209 @@
+{% extends "base.html" %} 
+{% load static %} 
+{% block title %} {{ album.album_name }} {% endblock title %}  
+
+{% block content %}  
+<!-- ##### Breadcumb Area Start ##### -->   
+<section class="breadcumb-area bg-img bg-overlay" style="background-image:url('{{ album.cover_image.url }}');">     
+    <div class="bradcumbContent">         
+        <p>See what's new</p>         
+        <h2>{{ album.album_name }}</h2>     
+    </div> 
+</section> 
+<!-- ##### Breadcumb Area End ##### -->    
+
+<div class="container1">     
+    <div class="profile-header ">       
+        <img src="{{ album.album_image.url }}" alt="Arijit Singh" class="profile-img">       
+        <div class="profile-info">         
+            <h1>{{ album.album_name }}<span class="verified"></span></h1>         
+            <button class="play-btn" id="playAllBtn">Play</button>         
+            <button class="icon-btn heart-btn" id="likeButton">   			
+                <span class="heart">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">   
+                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/> 
+                    </svg>
+                </span> 		
+            </button>         
+            <button class="icon-btn">⋯</button>       
+        </div>     
+    </div>      
+
+    <div class="tabs">       
+        <span class="tab">Songs</span>       
+        <span class="tab">Albums</span>       
+        <span class="tab">Biography</span>     
+    </div>      
+
+    <div><h3>Top Songs</h3></div>      
+
+    <div class="song-list">         
+        {% for song in songs %}         
+        <div class="song" data-src="{{ song.audio_file.url }}" data-song-id="{{ song.id }}">             
+            <div class="song-left">               
+                <div class="song-img-wrapper">                 
+                    <img src="{% if song.song_image %}{{ song.song_image.url }}{% else %}{{ album.album_image.url }}{% endif %}" class="song-img" alt="{{ song.song_name }}">                 
+                    <div class="play-overlay">                   
+                        <!-- Play -->                   
+                        <svg class="play-icon" viewBox="0 0 24 24">                     
+                            <path d="M8 5v14l11-7z" fill="#fff"/>                   
+                        </svg>                   
+                        <!-- Pause -->                   
+                        <svg class="pause-icon" viewBox="0 0 24 24" style="display: none;">                     
+                            <path d="M6 5h4v14H6zm8 0h4v14h-4z" fill="#fff"/>                   
+                        </svg>                 
+                    </div>               
+                </div>               
+                <div class="song-details">                 
+                    <p class="song-title">{{ song.song_name }}</p>                 
+                    <p class="song-meta">{{ album.album_name}} • {{ song.movie_name }}</p>               
+                </div>             
+            </div>             
+            <div class="song-duration">{{ song.duration }}</div>           
+        </div>         
+        {% empty %}           
+        <p>No songs available for this album. </p>         
+        {% endfor %}     
+    </div>   
+</div>
+
+<!-- Audio Element for Playback -->
+<audio id="audioPlayer" preload="metadata">
+    <source src="" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const audioPlayer = document.getElementById('audioPlayer');
+    const playAllBtn = document.getElementById('playAllBtn');
+    const songs = document.querySelectorAll('.song');
+    let currentSong = null;
+    let isPlaying = false;
+
+    // Play/Pause functionality for individual songs
+    songs.forEach(song => {
+        const playOverlay = song.querySelector('.play-overlay');
+        const playIcon = song.querySelector('.play-icon');
+        const pauseIcon = song.querySelector('.pause-icon');
+        const audioSrc = song.getAttribute('data-src');
+
+        playOverlay.addEventListener('click', function() {
+            if (currentSong === song && isPlaying) {
+                // Pause current song
+                audioPlayer.pause();
+                pauseIcon.style.display = 'none';
+                playIcon.style.display = 'block';
+                isPlaying = false;
+                song.classList.remove('playing');
+            } else {
+                // Play new song
+                if (currentSong && currentSong !== song) {
+                    // Reset previous song
+                    const prevPlayIcon = currentSong.querySelector('.play-icon');
+                    const prevPauseIcon = currentSong.querySelector('.pause-icon');
+                    prevPauseIcon.style.display = 'none';
+                    prevPlayIcon.style.display = 'block';
+                    currentSong.classList.remove('playing');
+                }
+
+                // Set new song
+                audioPlayer.src = audioSrc;
+                audioPlayer.play().then(() => {
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'block';
+                    isPlaying = true;
+                    currentSong = song;
+                    song.classList.add('playing');
+                    
+                    // Update play all button
+                    playAllBtn.textContent = 'Pause';
+                }).catch(error => {
+                    console.error('Error playing audio:', error);
+                    alert('Error playing audio. Please check if the file exists.');
+                });
+            }
+        });
+    });
+
+    // Play All button functionality
+    playAllBtn.addEventListener('click', function() {
+        if (isPlaying) {
+            audioPlayer.pause();
+            playAllBtn.textContent = 'Play';
+        } else {
+            if (currentSong) {
+                audioPlayer.play();
+                playAllBtn.textContent = 'Pause';
+            } else {
+                // Play first song
+                const firstSong = songs[0];
+                if (firstSong) {
+                    firstSong.querySelector('.play-overlay').click();
+                }
+            }
+        }
+    });
+
+    // Audio event listeners
+    audioPlayer.addEventListener('play', function() {
+        isPlaying = true;
+        playAllBtn.textContent = 'Pause';
+    });
+
+    audioPlayer.addEventListener('pause', function() {
+        isPlaying = false;
+        playAllBtn.textContent = 'Play';
+        if (currentSong) {
+            const playIcon = currentSong.querySelector('.play-icon');
+            const pauseIcon = currentSong.querySelector('.pause-icon');
+            pauseIcon.style.display = 'none';
+            playIcon.style.display = 'block';
+            currentSong.classList.remove('playing');
+        }
+    });
+
+    audioPlayer.addEventListener('ended', function() {
+        // Auto-play next song
+        if (currentSong) {
+            const currentIndex = Array.from(songs).indexOf(currentSong);
+            const nextSong = songs[currentIndex + 1];
+            
+            if (nextSong) {
+                nextSong.querySelector('.play-overlay').click();
+            } else {
+                // Reset to first song or stop
+                isPlaying = false;
+                currentSong = null;
+                playAllBtn.textContent = 'Play';
+            }
+        }
+    });
+
+    // Error handling
+    audioPlayer.addEventListener('error', function(e) {
+        console.error('Audio error:', e);
+        alert('Error loading audio file. Please check if the file exists and is accessible.');
+    });
+});
+</script>
+
+<style>
+.song.playing {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.song.playing .song-title {
+    color: #1db954;
+}
+
+.play-overlay {
+    cursor: pointer;
+}
+
+.play-overlay:hover {
+    opacity: 0.8;
+}
+</style>
+
+{% endblock content %}

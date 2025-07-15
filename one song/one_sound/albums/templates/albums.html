@@ -62,7 +62,7 @@ Albums{% endblock title %} {% block content %}
         <div class="single-album">
           <img src="{{ album.album_image.url }}" alt="" />
           <div class="album-info">
-            <a href="#">
+            <a href="{% url 'album_detail' album.id %}" class="album-title">
               <h5>{{ album.album_name }}</h5>
             </a>
             <p>{{ album.album_type }}</p>

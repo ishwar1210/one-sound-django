@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from .models import Album  # Make sure your model is actually named 'Album'
+from django.shortcuts import render ,get_object_or_404
+from albums.models import Album, Song # Make sure your model is actually named 'Album'
 
 # Create your views here.
 def albums_list(request):
@@ -18,3 +18,12 @@ def album_list(request):
         albums = Album.objects.all()
 
     return render(request, 'albums.html', {'albums': albums})
+
+def album_detail(request, album_id):
+    album = get_object_or_404(Album, pk=album_id)
+    songs = Song.objects.filter(album=album)  
+    context = {
+        'album': album,
+        'songs': songs,  
+    }
+    return render(request, 'albums/album_detail.html', context)
