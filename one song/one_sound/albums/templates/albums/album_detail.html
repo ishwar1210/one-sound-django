@@ -69,7 +69,7 @@
 
 <!-- Audio Element for Playback -->
 <audio id="audioPlayer" preload="metadata">
-    <source src="" type="audio/mpeg">
+    <source src="{% for song in songs %}{{ song.audio_file.url }}{% endfor %}" type="audio/mpeg">
     Your browser does not support the audio element.
 </audio>
 
