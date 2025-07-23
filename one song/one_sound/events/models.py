@@ -12,11 +12,12 @@ class Event(models.Model):
     
 class EventDetail(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    detail_text = models.TextField()
-    event_duration = models.DurationField()
+    event_duration = models.CharField(max_length=50, default='0:00:00')
     event_language = models.CharField(max_length=50, default='Hindi')
     event_age_limit = models.PositiveIntegerField(default=0)
     event_genres = models.CharField(max_length=100, default='General')
+    event_time = models.TimeField()
+    event_about = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"Detail for {self.event.event_name}"
