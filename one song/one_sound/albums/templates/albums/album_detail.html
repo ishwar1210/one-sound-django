@@ -1,5 +1,7 @@
-{% extends "base.html" %} {% load static %} {% block title %}{{ album.album_name
-}}{% endblock title %} {% block content %}
+{% extends "base.html" %}
+{% load static %} 
+{% block title %}{{ album.album_name }}{% endblock title %}
+{% block content %}
 
 <!-- ##### Breadcumb Area Start ##### -->
 <section
@@ -17,7 +19,7 @@
   <div class="profile-header">
     <img
       src="{{ album.album_image.url }}"
-      alt="Arijit Singh"
+      alt="{{ album.album_name }}"
       class="profile-img"
     />
     <div class="profile-info">
@@ -89,5 +91,235 @@
     {% endfor %}
   </div>
 </div>
+
+<!-- Custom Audio Player Bar -->
+<div class="custom-audio-player">
+  <img
+    id="player-img"
+    src="{% if songs.0.song_image %}{{ songs.0.song_image.url }}{% else %}{{ album.album_image.url }}{% endif %}"
+    alt="cover"
+    style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover"
+  />
+  <div>
+    <div
+      id="player-title"
+      style="font-weight: 600; color: #7da0c7; white-space: nowrap"
+    >
+      {{ songs.0.song_name }}
+    </div>
+    <div style="overflow: hidden; width: 200px">
+      <div
+        id="player-artist"
+        class="marquee-text"
+        style="color: #7da0c7; white-space: nowrap"
+      >
+        {{ album.album_name }} • {{ songs.0.movie_name }}
+      </div>
+    </div>
+  </div>
+  <button id="prevBtn" style="background: none; border: none; cursor: pointer">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff">
+      <path d="M17 6v12l-10-6z" />
+      <rect x="5" y="6" width="2" height="12" />
+    </svg>
+  </button>
+  <button
+    id="playPauseBtn"
+    style="background: none; border: none; cursor: pointer"
+  >
+    <span id="playPauseIcon">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="#fff">
+        <circle cx="12" cy="12" r="12" fill="#1db954" />
+        <polygon points="10,8 16,12 10,16" fill="#fff" />
+      </svg>
+    </span>
+  </button>
+  <button id="nextBtn" style="background: none; border: none; cursor: pointer">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff">
+      <path d="M7 6v12l10-6z" />
+      <rect x="17" y="6" width="2" height="12" />
+    </svg>
+  </button>
+  <span
+    id="currentTime"
+    style="
+      width: 40px;
+      display: inline-block;
+      text-align: right;
+      color: #7da0c7;
+      white-space: nowrap;
+    "
+    >0:00</span
+  >
+  <input
+    type="range"
+    id="seekBar"
+    value="0"
+    min="0"
+    max="100"
+    style="flex: 1; accent-color: #1db954"
+  />
+  <span
+    id="duration"
+    style="
+      width: 40px;
+      display: inline-block;
+      color: #7da0c7;
+      white-space: nowrap;
+    "
+    >0:00</span
+  >
+  <input
+    type="range"
+    id="volumeBar"
+    min="0"
+    max="1"
+    step="0.01"
+    value="1"
+    style="width: 80px; accent-color: #1db954"
+  />
+</div>
+<div style="width: 0px; height: 0px; visibility: hidden; display: none">
+  <audio
+    id="audioPlayer"
+    src="{% if songs.0.audio_file %}{{ songs.0.audio_file.url }}{% endif %}"
+    preload="metadata"
+  ></audio>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const songs = [
+      {% for song in songs %}
+        {
+          src: "{{ song.audio_file.url }}",
+          img: "{% if song.song_image %}{{ song.song_image.url }}{% else %}{{ album.album_image.url }}{% endif %}",
+          title: "{{ song.song_name|escapejs }}",
+          artist: "{{ album.album_name|escapejs }} • {{ song.movie_name|escapejs }}"
+        }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    ];
+
+    let currentSong = 0;
+    const audio = document.getElementById('audioPlayer');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const playPauseIcon = document.getElementById('playPauseIcon');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const seekBar = document.getElementById('seekBar');
+    const currentTimeEl = document.getElementById('currentTime');
+    const durationEl = document.getElementById('duration');
+    const volumeBar = document.getElementById('volumeBar');
+    const playerImg = document.getElementById('player-img');
+    const playerTitle = document.getElementById('player-title');
+    const playerArtist = document.getElementById('player-artist');
+
+    function formatTime(sec) {
+      if (isNaN(sec)) return "0:00";
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return m + ":" + (s < 10 ? "0" : "") + s;
+    }
+
+    function loadSong(index) {
+      const song = songs[index];
+      audio.src = song.src;
+      audio.load();
+      playerImg.src = song.img;
+      playerTitle.textContent = song.title;
+      playerArtist.textContent = song.artist;
+      seekBar.value = 0;
+      seekBar.disabled = true;
+      currentTimeEl.textContent = "0:00";
+      durationEl.textContent = "0:00";
+    }
+
+    playPauseBtn.addEventListener('click', function() {
+      if (audio.paused) {
+        audio.play();
+        playPauseIcon.innerHTML = `<svg width="40" height="40" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="12" fill="#1db954"/><rect x="9" y="8" width="2" height="8" fill="#fff"/><rect x="13" y="8" width="2" height="8" fill="#fff"/></svg>`;
+      } else {
+        audio.pause();
+        playPauseIcon.innerHTML = `<svg width="40" height="40" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="12" fill="#1db954"/><polygon points="10,8 16,12 10,16" fill="#fff"/></svg>`;
+      }
+    });
+
+    nextBtn.addEventListener('click', function() {
+      currentSong = (currentSong + 1) % songs.length;
+      loadSong(currentSong);
+      audio.play();
+    });
+
+    prevBtn.addEventListener('click', function() {
+      currentSong = (currentSong - 1 + songs.length) % songs.length;
+      loadSong(currentSong);
+      audio.play();
+    });
+
+    audio.addEventListener('timeupdate', function() {
+      if (!isNaN(audio.duration) && audio.duration > 0) {
+        seekBar.value = (audio.currentTime / audio.duration) * 100;
+        currentTimeEl.textContent = formatTime(audio.currentTime);
+        durationEl.textContent = formatTime(audio.duration);
+      }
+    });
+
+    seekBar.addEventListener('input', function() {
+      if (!isNaN(audio.duration) && audio.duration > 0) {
+        audio.currentTime = (seekBar.value / 100) * audio.duration;
+      }
+    });
+
+    volumeBar.addEventListener('input', function() {
+      audio.volume = volumeBar.value;
+    });
+
+    audio.addEventListener('loadedmetadata', function() {
+      seekBar.disabled = false;
+      durationEl.textContent = formatTime(audio.duration);
+    });
+
+    audio.addEventListener('ended', function() {
+      nextBtn.click();
+    });
+
+    loadSong(currentSong);
+    audio.volume = volumeBar.value;
+  });
+</script>
+
+<style>
+  .custom-audio-player {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background: #181818;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .marquee-text {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 8s linear infinite;
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  #audioPlayer {
+    display: none !important;
+  }
+</style>
 
 {% endblock content %}

@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('one_sounds.urls')),  # Include the URLs from the one_sounds app
     path('albums/', include('albums.urls')),
+    path('event/', include('events.urls')),
     path('logout', views.user_logout, name="logout"),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('register/', views.register, name='register'),
