@@ -27,7 +27,7 @@
                         <div class="event-text">
                             <a href="{% url 'event_detail' event.id %}"><h4>{{ event.event_name }}</h4></a>
                             <div class="event-meta-data">
-                                <a href="{% url 'event_detail' event.id %}" class="event-place">{{ event.event_location }}</a>
+                                <a href="{% url 'event_detail' event.id %}" class="event-place">{{ event.venue }}</a>
                                 <a href="{% url 'event_detail' event.id %}" class="event-date">{{ event.event_date }}</a>
                             </div>
                             <a href="{% url 'event_detail' event.id %}" class="btn see-more-btn">See Event</a>

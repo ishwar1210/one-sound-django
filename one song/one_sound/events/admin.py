@@ -1,14 +1,10 @@
 from django.contrib import admin
-from .models import Event, EventDetail
+from .models import Event
 
 # Register your models here.
 
 class EventAdmin(admin.ModelAdmin):
-    list_display = ['id', 'event_name', 'event_location', 'event_date', 'event_image']
-
-class EventDetailAdmin(admin.ModelAdmin):
-    list_display = ['event',  'event_duration', 'event_language', 'event_age_limit', 'event_genres', 'event_time', 'event_about']
-
+    list_display = ['id','event_name', 'event_date', 'start_time', 'duration', 'venue', 'description', 'event_image', 'cover_image', 'price', 'age_restriction', 'language', 'category', 'organizer_logo', 'artists_names', 'artists_images']
 
 admin.site.register(Event, EventAdmin)
-admin.site.register(EventDetail, EventDetailAdmin)
+

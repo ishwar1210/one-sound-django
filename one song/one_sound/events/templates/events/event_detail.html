@@ -1,9 +1,10 @@
 {% extends "base.html" %} {% load static %} {% block title %}{{ event.event_name
 }}{% endblock title %} {% block content %}
+
 <!-- ##### Breadcumb Area Start ##### -->
 <section
   class="breadcumb-area bg-img bg-overlay"
-  style="background-image: url('{% static 'img/bg-img/breadcumb3.jpg' %}')"
+  style="background-image: url('{% if event.cover_image %}{{ event.cover_image.url }}{% else %}{% static 'img/bg-img/breadcumb3.jpg' %}{% endif %}')"
 >
   <div class="bradcumbContent">
     <p>See what's new</p>
@@ -12,4 +13,354 @@
 </section>
 <!-- ##### Breadcumb Area End ##### -->
 
-{% endblock content %}
+<!-- Event Detail Main Content -->
+<div class="container my-5">
+  <div class="row">
+    <!-- Event Title and Share -->
+    <div class="col-12 mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="mb-0">{{ event.event_name }} | {{ event.venue}}</h1>
+        <div class="share-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M18 8C19.6569 8 21 6.65685 21 5C21 3.34315 19.6569 2 18 2C16.3431 2 15 3.34315 15 5C15 5.12 15.0096 5.24 15.028 5.354L8.36 9.197C7.87 8.463 7.001 8 6 8C4.343 8 3 9.343 3 11C3 12.657 4.343 14 6 14C7.001 14 7.87 13.537 8.36 12.803L15.028 16.646C15.01 16.765 15 16.882 15 17C15 18.6569 16.3431 20 18 20C19.6569 20 21 18.6569 21 17C21 15.3431 19.6569 14 18 14C16.999 14 16.13 14.463 15.64 15.197L8.972 11.354C8.99 11.234 9 11.117 9 11C9 10.883 8.99 10.766 8.972 10.646L15.64 6.803C16.13 7.537 16.999 8 18 8Z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Event Image and Details -->
+    <div class="col-lg-8 mb-4">
+      <div class="event-image position-relative rounded overflow-hidden">
+        <img
+          src="{% if event.event_image %}{{ event.event_image.url }}{% else %}{% static 'img/default-event.jpg' %}{% endif %}"
+          alt="{{ event.event_name }}"
+          class="img-fluid w-100"
+        />
+        {% if event.organizer_logo %}
+        <div class="position-absolute" style="top: 10px; right: 10px">
+          <img
+            src="{{ event.organizer_logo.url }}"
+            alt="Organizer"
+            class="img-fluid"
+            style="max-height: 40px"
+          />
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-lg-4 mb-4">
+      <div class="event-details-card p-4 rounded shadow">
+        <!-- Date (Calendar Icon) -->
+        <div class="detail-item d-flex align-items-center mb-3">
+          <div class="icon mr-3">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="4" width="18" height="16" rx="2" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+            </svg>
+          </div>
+          <div>{{ event.event_date|date:"D j M Y" }}</div>
+        </div>
+
+        <!-- Time (Clock Icon) -->
+        <div class="detail-item d-flex align-items-center mb-3">
+          <div class="icon mr-3">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+          </div>
+          <div>{{ event.start_time|default_if_none:"Time not specified" }}</div>
+        </div>
+
+        <!-- Duration (Hourglass Icon) -->
+        <div class="detail-item d-flex align-items-center mb-3">
+          <div class="icon mr-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              class="bi bi-hourglass-split"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z"
+              />
+            </svg>
+          </div>
+          <div>{{ event.duration }}</div>
+        </div>
+
+        <!-- Age Limit (People Icon) -->
+        <div class="detail-item d-flex align-items-center mb-3">
+          <div class="icon mr-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              class="bi bi-person-check"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m1.679-4.493-1.335 2.226a.75.75 0 0 1-1.174.144l-.774-.773a.5.5 0 0 1 .708-.708l.547.548 1.17-1.951a.5.5 0 1 1 .858.514M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4"
+              />
+              <path
+                d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z"
+              />
+            </svg>
+          </div>
+          <div>{{ event.age_restriction }} +</div>
+        </div>
+
+        <!-- Language (Translation Icon) -->
+        <div class="detail-item d-flex align-items-center mb-3">
+          <div class="icon mr-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              class="bi bi-translate"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M4.545 6.714 4.11 8H3l1.862-5h1.284L8 8H6.833l-.435-1.286zm1.634-.736L5.5 3.956h-.049l-.679 2.022z"
+              />
+              <path
+                d="M0 2a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v3h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-3H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zm7.138 9.995q.289.451.63.846c-.748.575-1.673 1.001-2.768 1.292.178.217.451.635.555.867 1.125-.359 2.08-.844 2.886-1.494.777.665 1.739 1.165 2.93 1.472.133-.254.414-.673.629-.89-1.125-.253-2.057-.694-2.82-1.284.681-.747 1.222-1.651 1.621-2.757H14V8h-3v1.047h.765c-.318.844-.74 1.546-1.272 2.13a6 6 0 0 1-.415-.492 2 2 0 0 1-.94.31"
+              />
+            </svg>
+          </div>
+          <div>{{ event.language }}</div>
+        </div>
+
+        <!-- Category (Music/Genre Icon) -->
+        <div class="detail-item d-flex align-items-center mb-3">
+          <div class="icon mr-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <!-- Music note/genre icon -->
+              <path
+                d="M9 13c0 1.105-1.12 2-2.5 2S4 14.105 4 13s1.12-2 2.5-2 2.5.895 2.5 2z"
+              />
+              <path fill-rule="evenodd" d="M9 3v10H8V3h1z" />
+              <path
+                d="M8 2.82a1 1 0 0 1 .804-.98l3-.6A1 1 0 0 1 13 2.22V4L8 5V2.82z"
+              />
+            </svg>
+          </div>
+          <div>{{ event.category }}</div>
+        </div>
+
+        <!-- Location (Map Pin Icon) -->
+        <div class="detail-item d-flex align-items-center mb-4">
+          <div class="icon mr-3">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+          </div>
+          <div>{{ event.venue }} <span class="text-primary">📍</span></div>
+        </div>
+
+        <!-- Price and Booking -->
+        <div class="price-section mb-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h4 class="mb-0">₹{{ event.price }}</h4>
+              <span class="badge badge-success">Available</span>
+            </div>
+            <a href="#" class="btn btn-danger btn-lg px-4">Book Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Event Categories -->
+    <div class="col-12 mb-4">
+      <div class="event-categories">
+        {% for category in event.categories.all %}
+        <span class="badge badge-dark mr-2 p-2">{{ category.name }}</span>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Event Description -->
+    <div class="row mt-5">
+      <div class="col-12">
+        <h1>About the Event</h1>
+        <div class="event-description">{{ event.description|linebreaks }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Artists Section -->
+  <div class="container my-5">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="mb-4">Artists</h1>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Artist Card -->
+      <div class="col-md-3 col-sm-6 mb-4">
+        <a href="#" class="text-decoration-none text-dark">
+          <div class="artist-card">
+            <div class="artist-image rounded overflow-hidden mb-3">
+              <img
+                src="{{event.artists_images.url}}"
+                alt="{{ event.artists_names }}"
+                class="img-fluid w-100"
+              />
+            </div>
+            <h5 class="mb-1">{{ event.artists_names }}</h5>
+            <p class="text-muted">{{ event.artist.role }}</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Terms & Conditions Section -->
+      <div class="row mt-5">
+        <div class="col-12">
+          <h3 class="mb-4">Terms & Conditions</h3>
+          <ol class="terms-list">
+            <li>
+              1. Tickets once booked cannot be exchanged or refunded and
+              Club Rules Applicable.
+            </li>
+
+            <li>
+              2. An Internet handling fee per ticket may be levied. Please check
+              the total amount before payment
+            </li>
+
+            <li>
+              3. We recommend that you arrive at-least 30 minutes prior at the
+              venue for a seamless entry
+            </li>
+
+            <li>
+              4. Unlawful resale (or attempted unlawful resale) of a ticket would
+              lead to seizure or cancellation of that ticket without refund or
+              other compensation.
+            </li>
+
+            <li>
+              5. Parking near or at the venue premises is at risk to the vehicle
+              owner. Organizer will not hold responsibility for any damage or
+              theft of any vehicles within the stipulated parking premises of
+              the venue.
+            </li>
+
+            <li>
+              6. Consumption and sale of illegal substances is strictly prohibited.
+              Anybody caught in possession will be handed over to the
+              authorities.
+            </li>
+
+            <li>Rights of admission reserved</li>
+          </ol>
+        </div>
+      </div>
+
+      <style>
+        .event-details-card {
+          background-color: #fff;
+          border-radius: 8px;
+        }
+
+        .detail-item {
+          font-size: 16px;
+        }
+
+        .detail-item .icon {
+          color: #555;
+          width: 24px;
+        }
+
+        .price-section {
+          border-top: 1px solid #eee;
+          padding-top: 15px;
+        }
+
+        .badge-dark {
+          background-color: #343a40;
+          color: white;
+          font-weight: normal;
+        }
+        .artist-card {
+          transition: transform 0.2s ease;
+        }
+
+        .artist-card:hover {
+          transform: translateY(-5px);
+        }
+
+        .artist-image {
+          aspect-ratio: 1/1;
+          overflow: hidden;
+        }
+
+        .artist-image img {
+          object-fit: cover;
+          height: 100%;
+          width: 100%;
+        }
+
+        .terms-list {
+          padding-left: 20px;
+        }
+
+        .terms-list li {
+          margin-bottom: 15px;
+          line-height: 1.5;
+        }
+
+        .terms-list a {
+          color: #2a5885;
+          text-decoration: none;
+        }
+
+        .terms-list a:hover {
+          text-decoration: underline;
+        }
+      </style>
+
+      {% endblock content %}
+    </div>
+  </div>
+</div>
