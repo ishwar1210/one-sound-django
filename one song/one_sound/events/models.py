@@ -17,7 +17,6 @@ class Event(models.Model):
     organizer_logo = models.ImageField(upload_to='events/logos/', blank=True, null=True)
     artists_names = models.CharField(max_length=255, blank=True, null=True)
     artists_images = models.ImageField(upload_to='events/artists/', blank=True, null=True)
-
     
     def __str__(self):
         return self.event_name
