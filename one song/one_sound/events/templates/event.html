@@ -22,7 +22,7 @@
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="single-event-area mb-30">
                         <div class="event-thumbnail" style="object-fit: cover; height: 250px;">
-                            <img src="{{ event.event_image.url }}" alt="">
+                            <a href="{% url 'event_detail' event.id %}"><img src="{{ event.event_image.url }}" alt=""></a>
                         </div>
                         <div class="event-text">
                             <a href="{% url 'event_detail' event.id %}"><h4>{{ event.event_name }}</h4></a>

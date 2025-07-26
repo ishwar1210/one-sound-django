@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Contact Us{% endblock title %} 
+{% block content %}
+
+<!-- ##### Breadcumb Area Start ##### -->
+<section
+  class="breadcumb-area bg-img bg-overlay"
+  style="background-image: url({% static 'img/bg-img/breadcumb.jpg' %})"
+>
+  <div class="bradcumbContent">
+    <p>See what’s new</p>
+    <h2>Contact</h2>
+  </div>
+</section>
+<!-- ##### Breadcumb Area End ##### -->
+
+<!-- ##### Contact Area Start ##### -->
+<section class="contact-area section-padding-0-100">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="section-heading">
+          <p>See what’s new</p>
+          <h2>Get In Touch</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <!-- Contact Form Area -->
+        <div class="contact-form-area">
+          <form action="{% url 'contact' %}" method="post">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6 col-lg-4">
+                <div class="form-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    placeholder="Name"
+                    value="{{ request.user.first_name }} {{ request.user.last_name }}"
+                    {% if request.user.is_authenticated %} readonly {% endif %}
+                  />
+                </div>
+              </div>
+              <div class="col-md-6 col-lg-4">
+                <div class="form-group">
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    placeholder="E-mail"
+                    value="{{ request.user.email }}"
+                    {% if request.user.is_authenticated %} readonly {% endif %}
+                  />
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="subject"
+                    placeholder="Subject"
+                  />
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-group">
+                  <textarea
+                    name="message"
+                    class="form-control"
+                    id="message"
+                    cols="30"
+                    rows="10"
+                    placeholder="Message"
+                  ></textarea>
+                </div>
+              </div>
+              <div class="col-12 text-center">
+                <button class="btn oneMusic-btn mt-30" type="submit">
+                  Send <i class="fa fa-angle-double-right"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+          {% if success %}
+          <div class="alert alert-success mt-3">
+            Thank you for contacting us!
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ##### Contact Area End ##### -->
+
+{% endblock content %}

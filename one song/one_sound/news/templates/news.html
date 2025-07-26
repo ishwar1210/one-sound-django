@@ -1,0 +1,88 @@
+{% extends "base.html" %} 
+{% load static %} 
+{% block title %}News{% endblock %}
+{% block content %}
+
+<!-- ##### Breadcumb Area Start ##### -->
+<section
+  class="breadcumb-area bg-img bg-overlay"
+  style="background-image: url('{% static 'img/bg-img/breadcumb3.jpg' %}')"
+>
+  <div class="bradcumbContent">
+    <p>See what’s new</p>
+    <h2>News</h2>
+  </div>
+</section>
+<!-- ##### Breadcumb Area End ##### -->
+
+<!-- ##### Blog Area Start ##### -->
+<div class="blog-area section-padding-100">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-lg-9">
+        {% for news in news_list %}
+        <!-- Single Post Start -->
+        <div
+          class="single-blog-post mb-100 wow fadeInUp"
+          data-wow-delay="100ms"
+        >
+          <!-- Post Thumb -->
+          <div class="blog-post-thumb mt-30">
+            {% if news.news_image %}
+            <a href="#"><img src="{{ news.news_image.url }}" alt="" /></a>
+            {% endif %}
+            <!-- Post Date -->
+            <div class="post-date">
+              <span>{{ news.published_date|date:"d" }}</span>
+              <span>{{ news.published_date|date:"F 'y" }}</span>
+            </div>
+          </div>
+          <!-- Blog Content -->
+          <div class="blog-content">
+            <!-- Post Title -->
+            <a href="#" class="post-title">{{ news.title }}</a>
+            <!-- Post Meta -->
+            <div class="post-meta d-flex mb-30">
+              <p class="post-author">
+                By <a href="#">{{ news.uploaded_by.username }}</a>
+              </p>
+            </div>
+            <!-- Post Excerpt -->
+            <p>{{ news.content|truncatewords:30 }}</p>
+          </div>
+        </div>
+        {% empty %}
+        <p>No news available.</p>
+        {% endfor %}
+      </div>
+
+      <div class="col-12 col-lg-3">
+                    <div class="blog-sidebar-area">
+      <!-- Widget Area -->
+                        <div class="single-widget-area mb-30">
+                            <div class="widget-title">
+                                <h5>Categories</h5>
+                            </div>
+                            <div class="widget-content">
+                                <ul>
+                                    <li><a href="#">Music</a></li>
+                                    <li><a href="#">Events &amp; Press</a></li>
+                                    <li><a href="#">Festivals</a></li>
+                                    <li><a href="#">Lyfestyle</a></li>
+                                    <li><a href="#">Uncategorized</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- ##### Blog Area End ##### -->
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock content %}
