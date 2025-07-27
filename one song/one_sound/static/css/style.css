@@ -1021,11 +1021,14 @@ img {
   padding: 45px 30px;
   -webkit-transition-duration: 500ms;
   transition-duration: 500ms;
-  border: 1px solid transparent; }
+      border: 1px solid #d8d8d8;
+    background-color: #f5f9fa }
   .weeks-top-area .single-top-item {
     position: relative;
     z-index: 1;
-    margin-bottom: 21px; }
+    border-bottom: 1px solid #d8d8d8;
+    margin-bottom: 10px;
+    padding-bottom: 10px; }
     .weeks-top-area .single-top-item:last-child {
       margin-bottom: 0; }
     .weeks-top-area .single-top-item .thumbnail {
@@ -1056,7 +1059,9 @@ img {
   .popular-artists-area .single-artists {
     position: relative;
     z-index: 1;
-    margin-bottom: 17px; }
+    border-bottom: 1px solid #d8d8d8;
+    margin-bottom: 10px;
+    padding-bottom: 10px; }
     .popular-artists-area .single-artists:last-child {
       margin-bottom: 0; }
     .popular-artists-area .single-artists .thumbnail {

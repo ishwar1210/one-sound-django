@@ -1,8 +1,6 @@
-{% extends "base.html" %} 
-
-{% load static %} 
-
-{% block title %}One Sound{% endblock title %} 
+{% extends "base.html" %}
+{% load static %}
+{% block title %}One Sound{% endblock title %}
 {% block content %}
 <!-- ##### Hero Area Start ##### -->
 <section class="hero-area">
@@ -72,8 +70,6 @@
 </section>
 <!-- ##### Hero Area End ##### -->
 
-
-
 <!-- ##### Latest Albums Area Start ##### -->
 <section class="latest-albums-area section-padding-100">
   <div class="container">
@@ -85,19 +81,6 @@
         </div>
       </div>
     </div>
-    <div class="row justify-content-center">
-      <div class="col-12 col-lg-9">
-        <div class="ablums-text text-center mb-70">
-          <p>
-            Nam tristique ex vel magna tincidunt, ut porta nisl finibus. Vivamus
-            eu dolor eu quam varius rutrum. Fusce nec justo id sem aliquam
-            fringilla nec non lacus. Suspendisse eget lobortis nisi, ac cursus
-            odio. Vivamus nibh velit, rutrum at ipsum ac, dignissim iaculis
-            ante. Donec in velit non elit pulvinar pellentesque et non eros.
-          </p>
-        </div>
-      </div>
-    </div>
 
     <div class="row">
       <div class="col-12">
@@ -105,9 +88,11 @@
           {% for album in albums %}
           <!-- Single Album -->
           <div class="single-album">
-            <img src="{{ album.album_image.url }}" alt="" />
+            <a href="{% url 'album_detail' album.id %}">
+              <img src="{{ album.album_image.url }}" alt="" />
+            </a>
             <div class="album-info">
-              <a href="#">
+              <a href="{% url 'album_detail' album.id %}">
                 <h5>{{ album.album_name }}</h5>
               </a>
               <p>{{ album.album_type }}</p>
@@ -122,13 +107,137 @@
 </section>
 <!-- ##### Latest Albums Area End ##### -->
 
+<!-- ##### Miscellaneous Area Start ##### -->
+<section class="miscellaneous-area section-padding-100-0">
+  <div class="container">
+    <div class="row">
+      <!-- ***** Weeks Top ***** -->
+      <div class="col-12 col-lg-4">
+        <div class="weeks-top-area mb-100">
+          <div
+            class="section-heading text-left mb-50 wow fadeInUp"
+            data-wow-delay="50ms"
+          >
+            <p>See what's new</p>
+            <h2>This week's top</h2>
+          </div>
+
+          {% for album in top_albums %}
+          <!-- Single Top Item -->
+          <div
+            class="single-top-item d-flex wow fadeInUp"
+            data-wow-delay="{{ forloop.counter0|add:1 }}00ms"
+          >
+            <div class="thumbnail">
+              <a href="{% url 'album_detail' album.id %}">
+                <img
+                  src="{{ album.album_image.url }}"
+                  alt="{{ album.album_name }}"
+                />
+              </a>
+            </div>
+            <div class="content-">
+              <a href="{% url 'album_detail' album.id %}">
+                <h6>{{ album.album_name }}</h6>
+              </a>
+              <p>{{ album.album_type }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- ***** New Hits Songs ***** -->
+      <div class="col-12 col-lg-4">
+        <div class="new-hits-area mb-100">
+          <div
+            class="section-heading text-left mb-50 wow fadeInUp"
+            data-wow-delay="50ms"
+          >
+            <p>See what's new</p>
+            <h2 >New Hits</h2>
+          </div>
+
+          {% for album in new_hits %}
+          <!-- Single New Item -->
+          <div
+            class="single-new-item d-flex align-items-center justify-content-between wow fadeInUp"
+            data-wow-delay="{{ forloop.counter0|add:1 }}00ms"
+          >
+            <div class="first-part d-flex align-items-center">
+              <div class="thumbnail">
+                <a href="{% url 'album_detail' album.id %}">
+                  <img
+                    src="{{ album.album_image.url }}"
+                    alt="{{ album.album_name }}"
+                  />
+                </a>
+              </div>
+              <div class="content-">
+                <a href="{% url 'album_detail' album.id %}">
+                  <h6>{{ album.album_name }}</h6>
+                </a>
+                <p>{{ album.album_type }}</p>
+              </div>
+            </div>
+            {% if album.audio_file %}
+            <audio preload="auto" controls>
+              <source src="{{ album.audio_file.url }}" />
+            </audio>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- ***** Popular Artists ***** -->
+      <div class="col-12 col-lg-4">
+        <div class="popular-artists-area mb-100">
+          <div
+            class="section-heading text-left mb-50 wow fadeInUp"
+            data-wow-delay="50ms"
+          >
+            <p>See what's new</p>
+            <h2>Popular Albums</h2>
+          </div>
+
+          {% for album in popular_albums %}
+          <!-- Single Artist -->
+          <div
+            class="single-artists d-flex align-items-center wow fadeInUp"
+            data-wow-delay="{{ forloop.counter0|add:1 }}00ms"
+          >
+            <div class="thumbnail">
+              <a href="{% url 'album_detail' album.id %}">
+                <img
+                  src="{{ album.album_image.url }}"
+                  alt="{{ album.album_name }}"
+                />
+              </a>
+            </div>
+            <div class="content-">
+              <a href="{% url 'album_detail' album.id %}">
+                <p>{{ album.album_name }}</p>
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ##### Miscellaneous Area End ##### -->
+
 <!-- ##### Add Area Start ##### -->
-<div class="add-area mb-100" >
-  <div class="container" >
-    <div class="row" >
-      <div class="col-12" >
-        <div class="adds" >
-          <a href="#" ><img src="{% static 'img/bg-img/bg-1.jpg' %}" alt=""></a>
+<div class="add-area mb-100">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="adds">
+          <a href="#"
+            ><img src="{% static 'img/bg-img/bg-1.jpg' %}" alt=""
+          /></a>
         </div>
       </div>
     </div>
