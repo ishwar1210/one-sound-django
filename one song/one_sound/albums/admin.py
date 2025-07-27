@@ -1,17 +1,11 @@
 from django.contrib import admin
-from .models import Album, Song
+from .models import Album, WeeksTop, NewHit, PopularAlbum, FeaturedAlbum
 
-
-# Register your models here.
+@admin.register(Album)
 class AlbumAdmin(admin.ModelAdmin):
-    list_display = ['id', 'album_name', 'album_type', 'album_image']
-   
+    list_display = ['album_name', 'album_type']
 
-admin.site.register(Album, AlbumAdmin)
-
-class SongAdmin(admin.ModelAdmin):
-    list_display = ['id', 'album', 'song_name', 'audio_file', 'movie_name', 'duration']
-    list_filter = ['album']
-    search_fields = ['song_name']
-
-admin.site.register(Song, SongAdmin)
+admin.site.register(WeeksTop)
+admin.site.register(NewHit)
+admin.site.register(PopularAlbum)
+admin.site.register(FeaturedAlbum)

@@ -1,6 +1,6 @@
-{% extends "base.html" %}
+{% extends "base.html" %} 
 {% load static %} 
-{% block title %}{{ album.album_name }}{% endblock title %}
+{% block title %}{{ album.album_name }}}{% endblock title %} 
 {% block content %}
 
 <!-- ##### Breadcumb Area Start ##### -->
@@ -25,31 +25,36 @@
     <div class="profile-info">
       <h1>{{ album.album_name }}<span class="verified"></span></h1>
       <button class="play-btn" id="playAllBtn">Play</button>
-      <button class="icon-btn heart-btn" id="likeButton">
-        <span class="heart">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            class="bi bi-heart-fill"
-            viewBox="0 0 16 16"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
-            />
-          </svg>
-        </span>
-      </button>
-      <button class="icon-btn">⋯</button>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const playAllBtn = document.getElementById('playAllBtn');
+          const audio = document.getElementById('audioPlayer');
+          const playPauseIcon = document.getElementById('playPauseIcon');
+          playAllBtn.addEventListener('click', function() {
+        if (audio.paused) {
+          audio.play();
+          playAllBtn.textContent = "Pause";
+          playPauseIcon.innerHTML = `<svg width="40" height="40" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="12" fill="#1db954"/><rect x="9" y="8" width="2" height="8" fill="#fff"/><rect x="13" y="8" width="2" height="8" fill="#fff"/></svg>`;
+        } else {
+          audio.pause();
+          playAllBtn.textContent = "Play";
+          playPauseIcon.innerHTML = `<svg width="40" height="40" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="12" fill="#1db954"/><polygon points="10,8 16,12 10,16" fill="#fff"/></svg>`;
+        }
+          });
+          // Sync button text with audio state if play/pause is triggered elsewhere
+          audio.addEventListener('play', function() {
+        playAllBtn.textContent = "Pause";
+          });
+          audio.addEventListener('pause', function() {
+        playAllBtn.textContent = "Play";
+          });
+        });
+      </script>
     </div>
   </div>
 
   <div class="tabs">
     <span class="tab">Songs</span>
-    <span class="tab">Albums</span>
-    <span class="tab">Biography</span>
   </div>
 
   <div><h3>Top Songs</h3></div>
@@ -213,6 +218,7 @@
     const playerImg = document.getElementById('player-img');
     const playerTitle = document.getElementById('player-title');
     const playerArtist = document.getElementById('player-artist');
+    const songDivs = document.querySelectorAll('.song');
 
     function formatTime(sec) {
       if (isNaN(sec)) return "0:00";
@@ -221,7 +227,8 @@
       return m + ":" + (s < 10 ? "0" : "") + s;
     }
 
-    function loadSong(index) {
+    function loadSong(index, autoPlay = false) {
+      currentSong = index;
       const song = songs[index];
       audio.src = song.src;
       audio.load();
@@ -232,6 +239,23 @@
       seekBar.disabled = true;
       currentTimeEl.textContent = "0:00";
       durationEl.textContent = "0:00";
+      highlightCurrentSong();
+      if (autoPlay) {
+        audio.play();
+        playPauseIcon.innerHTML = `<svg width="40" height="40" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="12" fill="#1db954"/><rect x="9" y="8" width="2" height="8" fill="#fff"/><rect x="13" y="8" width="2" height="8" fill="#fff"/></svg>`;
+      } else {
+        playPauseIcon.innerHTML = `<svg width="40" height="40" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="12" fill="#1db954"/><polygon points="10,8 16,12 10,16" fill="#fff"/></svg>`;
+      }
+    }
+
+    function highlightCurrentSong() {
+      songDivs.forEach((div, idx) => {
+        if (idx === currentSong) {
+          div.classList.add('active-song');
+        } else {
+          div.classList.remove('active-song');
+        }
+      });
     }
 
     playPauseBtn.addEventListener('click', function() {
@@ -246,14 +270,12 @@
 
     nextBtn.addEventListener('click', function() {
       currentSong = (currentSong + 1) % songs.length;
-      loadSong(currentSong);
-      audio.play();
+      loadSong(currentSong, true);
     });
 
     prevBtn.addEventListener('click', function() {
       currentSong = (currentSong - 1 + songs.length) % songs.length;
-      loadSong(currentSong);
-      audio.play();
+      loadSong(currentSong, true);
     });
 
     audio.addEventListener('timeupdate', function() {
@@ -281,6 +303,13 @@
 
     audio.addEventListener('ended', function() {
       nextBtn.click();
+    });
+
+    // Add click event to each song in the list
+    songDivs.forEach(function(div, idx) {
+      div.addEventListener('click', function() {
+        loadSong(idx, true);
+      });
     });
 
     loadSong(currentSong);
@@ -319,6 +348,11 @@
 
   #audioPlayer {
     display: none !important;
+  }
+
+  .active-song {
+    background: #e6f7ff;
+    border-radius: 8px;
   }
 </style>
 

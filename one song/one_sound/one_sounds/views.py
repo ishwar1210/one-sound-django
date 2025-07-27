@@ -1,20 +1,22 @@
 from django.shortcuts import render
-from albums.models import Album  # Import from albums app
+from albums.models import Album, FeaturedAlbum, WeeksTop, NewHit, PopularAlbum  # Import from albums app
 
 # Create your views here.
 
 
 def index(request):
-    albums = Album.objects.all()[:10]  # Latest 10 albums
-    top_albums = Album.objects.all()[:6]  # Top 6 albums
-    new_hits = Album.objects.all().order_by('-id')[:6]  # 6 newest albums
-    popular_albums = Album.objects.all()[:7]  # 7 popular albums
-    
+    albums = Album.objects.all()[:6]
+    top_albums = [wt.album for wt in WeeksTop.objects.order_by('position')]
+    new_hits = [nh.album for nh in NewHit.objects.order_by('position')]
+    popular_albums = [pa.album for pa in PopularAlbum.objects.order_by('position')]
+    featured_albums = FeaturedAlbum.objects.all()[:2]
+
     context = {
         'albums': albums,
         'top_albums': top_albums,
         'new_hits': new_hits,
         'popular_albums': popular_albums,
+        'featured_albums': featured_albums,
     }
     return render(request, 'index.html', context)
 

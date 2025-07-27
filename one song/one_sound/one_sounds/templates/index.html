@@ -1,19 +1,22 @@
-{% extends "base.html" %}
-{% load static %}
-{% block title %}One Sound{% endblock title %}
+{% extends "base.html" %} 
+{% load static %} 
+{% block title %}One Sound{% endblock title %} 
 {% block content %}
 <!-- ##### Hero Area Start ##### -->
 <section class="hero-area">
   <div class="hero-slides owl-carousel">
+    {% for featured in featured_albums %}
     <!-- Single Hero Slide -->
     <div
       class="single-hero-slide d-flex align-items-center justify-content-center"
     >
       <!-- Slide Img -->
-      <div
-        class="slide-img bg-img"
-        style="background-image: url('{% static 'img/bg-img/bg-1.jpg' %}')"
-      ></div>
+      <a href="{% url 'album_detail' featured.album.id %}" class="slide-link">
+        <div
+          class="slide-img bg-img"
+          style="background-image: url('{% if featured.slide_image %}{{ featured.slide_image.url }}{% else %}{{ featured.album.album_image.url }}{% endif %}')"
+        ></div>
+      </a>
       <!-- Slide Content -->
       <div class="container">
         <div class="row">
@@ -21,53 +24,26 @@
             <div class="hero-slides-content text-center">
               <h6 data-animation="fadeInUp" data-delay="100ms">Latest album</h6>
               <h2 data-animation="fadeInUp" data-delay="300ms">
-                Beyond Time <span>Beyond Time</span>
+                {{ featured.custom_heading|default:featured.album.album_name }}
+                <span>{{ featured.custom_subheading|default:featured.album.album_name }}</span>
               </h2>
               <a
                 data-animation="fadeInUp"
                 data-delay="500ms"
-                href="#"
+                href="{% url 'album_detail' featured.album.id %}"
                 class="btn oneMusic-btn mt-50"
-                >Discover <i class="fa fa-angle-double-right"></i
-              ></a>
+              >
+                Discover <i class="fa fa-angle-double-right"></i>
+              </a>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Single Hero Slide -->
-    <div
-      class="single-hero-slide d-flex align-items-center justify-content-center"
-    >
-      <!-- Slide Img -->
-      <div
-        class="slide-img bg-img"
-        style="background-image: url('{% static 'img/bg-img/bg-2.jpg' %}')"
-      ></div>
-      <!-- Slide Content -->
-      <div class="container">
-        <div class="row">
-          <div class="col-12">
-            <div class="hero-slides-content text-center">
-              <h6 data-animation="fadeInUp" data-delay="100ms">Latest album</h6>
-              <h2 data-animation="fadeInUp" data-delay="300ms">
-                Colorlib Music <span>Colorlib Music</span>
-              </h2>
-              <a
-                data-animation="fadeInUp"
-                data-delay="500ms"
-                href="#"
-                class="btn oneMusic-btn mt-50"
-                >Discover <i class="fa fa-angle-double-right"></i
-              ></a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    {% endfor %}
   </div>
 </section>
+
 <!-- ##### Hero Area End ##### -->
 
 <!-- ##### Latest Albums Area Start ##### -->
@@ -155,7 +131,7 @@
             data-wow-delay="50ms"
           >
             <p>See what's new</p>
-            <h2 >New Hits</h2>
+            <h2>New Hits</h2>
           </div>
 
           {% for album in new_hits %}
@@ -217,8 +193,9 @@
             </div>
             <div class="content-">
               <a href="{% url 'album_detail' album.id %}">
-                <p>{{ album.album_name }}</p>
+                <h6>{{ album.album_name }}</h6>
               </a>
+              <p>{{ album.album_type }}</p>
             </div>
           </div>
           {% endfor %}
