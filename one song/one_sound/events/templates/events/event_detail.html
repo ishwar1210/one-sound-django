@@ -1,7 +1,4 @@
-{% extends "base.html" %}
-{% load static %} 
-{% block title %}{{ event.event_name }}{% endblock title %}
-{% block content %}
+{% extends "base.html" %} {% load static %} {% now "Y-m-d" as today_date %} {% block title %}{{ event.event_name }}{% endblock title %} {% block content %}
 
 <!-- ##### Breadcumb Area Start ##### -->
 <section
@@ -197,36 +194,79 @@
           </div>
           <div>{{ event.venue }} <span class="text-primary">📍</span></div>
         </div>
-
-        <!-- Price and Booking -->
-        <div class="price-section mb-3">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h4 class="mb-0">₹{{ event.price }}</h4>
-              <span class="badge badge-success">Available</span>
-            </div>
-            <button id="rzp-button1" class="btn btn-danger btn-lg px-4">
-              Book Now
-            </button>
-          </div>
+    <!-- Price and Booking -->
+    {% if is_upcoming %}
+    <!-- Show booking form if event is upcoming or today -->
+    <!-- Price and Booking UI Fix -->
+    <div class="price-section mb-3">
+      <div class="d-flex flex-wrap align-items-center justify-content-between">
+        <div class="d-flex align-items-center mb-2 mb-md-0">
+          <h4 class="mb-0 font-weight-bold" style="font-size: 2rem;">
+            ₹<span id="ticket-price">{{ event.price|floatformat:2 }}</span>
+          </h4>
+          <span class="badge badge-success ml-3" style="font-size: 1rem;">Available</span>
         </div>
+        <div class="d-flex align-items-center">
+          <label for="ticket-qty" class="mr-2 mb-0 font-weight-bold" style="font-size: 1rem;">Tickets:</label>
+          <input
+            type="number"
+            id="ticket-qty"
+            min="1"
+            value="1"
+            style="width: 70px; height: 48px; font-size: 1.2rem; margin-right: 10px; text-align: center;"
+            class="form-control d-inline-block"
+          />
+          {% if user.is_authenticated %}
+          <button id="rzp-button1" class="btn btn-danger btn-lg px-4" style="height: 48px; font-size: 1.2rem;">
+            Book Now
+          </button>
+          {% else %}
+          <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-danger btn-lg px-4" style="height: 48px; font-size: 1.2rem;">
+            Login to Book
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="mt-3">
+        <strong style="font-size: 1.5rem;">
+          Total: ₹<span id="total-price">{{ event.price|floatformat:2 }}</span>
+        </strong>
+      </div>
+    </div>
+    {% else %}
+    <!-- Show booking closed message if event is past -->
+    <div class="price-section mb-3">
+      <div class="alert alert-danger mb-0">
+        Booking Closed (Event date has passed)
+      </div>
+    </div>
+    {% endif %}
 
         <!-- Razorpay Checkout Script -->
         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         <script>
+          var basePrice = {{ event.price }};
+          var ticketQtyInput = document.getElementById("ticket-qty");
+          var totalPriceSpan = document.getElementById("total-price");
+
+          ticketQtyInput.addEventListener("input", function () {
+            let qty = parseInt(ticketQtyInput.value) || 1;
+            if (qty < 1) qty = 1;
+            let total = basePrice * qty;
+            totalPriceSpan.textContent = total;
+          });
+
+          // Razorpay integration
           var options = {
             key: "rzp_test_oGfcnkgVos4kTz",
-            amount: "{{ event_price_paise }}",
+            amount: "{{ event.price_paise }}", // This will be updated before payment
             currency: "INR",
             name: "{{ event.event_name }}",
             description: "Event Booking",
             image:
               "{% if event.event_image %}{{ event.event_image.url }}{% else %}{% static 'img/default-event.jpg' %}{% endif %}",
             handler: function (response) {
-              alert(
-                "Payment successful! Payment ID: " +
-                  response.razorpay_payment_id
-              );
+              alert("Payment successful! Payment ID: " + response.razorpay_payment_id);
             },
             prefill: {
               name: "{{ request.user.first_name }} {{ request.user.last_name }}",
@@ -238,6 +278,11 @@
           };
           var rzp1 = new Razorpay(options);
           document.getElementById("rzp-button1").onclick = function (e) {
+            let qty = parseInt(ticketQtyInput.value) || 1;
+            if (qty < 1) qty = 1;
+            let totalPaise = basePrice * qty * 100;
+            options.amount = totalPaise.toString();
+            rzp1 = new Razorpay(options);
             rzp1.open();
             e.preventDefault();
           };
@@ -334,69 +379,98 @@
       </div>
 
       <style>
-        .event-details-card {
-          background-color: #fff;
-          border-radius: 8px;
-        }
+                .event-details-card {
+                  background-color: #fff;
+                  border-radius: 8px;
+                }
 
-        .detail-item {
-          font-size: 16px;
-        }
+                .detail-item {
+                  font-size: 16px;
+                }
 
-        .detail-item .icon {
-          color: #555;
-          width: 24px;
-        }
+                .detail-item .icon {
+                  color: #555;
+                  width: 24px;
+                }
 
-        .price-section {
-          border-top: 1px solid #eee;
-          padding-top: 15px;
-        }
+                .price-section {
+                  border-top: 1px solid #eee;
+                  padding-top: 15px;
+                }
 
-        .badge-dark {
-          background-color: #343a40;
-          color: white;
-          font-weight: normal;
-        }
-        .artist-card {
-          transition: transform 0.2s ease;
-        }
+                .badge-dark {
+                  background-color: #343a40;
+                  color: white;
+                  font-weight: normal;
+                }
+                .artist-card {
+                  transition: transform 0.2s ease;
+                }
 
-        .artist-card:hover {
-          transform: translateY(-5px);
-        }
+                .artist-card:hover {
+                  transform: translateY(-5px);
+                }
 
-        .artist-image {
-          aspect-ratio: 1/1;
-          overflow: hidden;
-        }
+                .artist-image {
+                  aspect-ratio: 1/1;
+                  overflow: hidden;
+                }
 
-        .artist-image img {
-          object-fit: cover;
-          height: 100%;
-          width: 100%;
-        }
+                .artist-image img {
+                  object-fit: cover;
+                  height: 100%;
+                  width: 100%;
+                }
 
-        .terms-list {
-          padding-left: 20px;
-        }
+                .terms-list {
+                  padding-left: 20px;
+                }
 
-        .terms-list li {
-          margin-bottom: 15px;
-          line-height: 1.5;
-        }
+                .terms-list li {
+                  margin-bottom: 15px;
+                  line-height: 1.5;
+                }
 
-        .terms-list a {
-          color: #2a5885;
-          text-decoration: none;
-        }
+                .terms-list a {
+                  color: #2a5885;
+                  text-decoration: none;
+                }
 
-        .terms-list a:hover {
-          text-decoration: underline;
-        }
-      </style>
+                .terms-list a:hover {
+                  text-decoration: underline;
+                }
 
-      {% endblock content %}
+                .price-section h4 {
+                  margin-bottom: 0;
+                  font-weight: bold;
+                }
+                .price-section .badge-success {
+                  margin-left: 1rem;
+                  font-size: 1rem;
+                  vertical-align: middle;
+                }
+                .price-section label {
+                  font-weight: bold;
+                  font-size: 1rem;
+                }
+                .price-section input[type="number"] {
+                  width: 70px;
+                  height: 48px;
+                  font-size: 1.2rem;
+                  text-align: center;
+                  margin-right: 10px;
+                }
+                .price-section button {
+                  height: 48px;
+                  font-size: 1.2rem;
+                }
+                .price-section strong {
+                  font-size: 1.5rem;
+                }
+        </style>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+{% endblock content %}

@@ -65,12 +65,13 @@
                             </div>
                             <div class="widget-content">
                                 <ul>
-                                    <li><a href="#">Music</a></li>
-                                    <li><a href="#">Events &amp; Press</a></li>
-                                    <li><a href="#">Festivals</a></li>
-                                    <li><a href="#">Lyfestyle</a></li>
-                                    <li><a href="#">Uncategorized</a></li>
-                                </ul>
+  <li><a href="{% url 'news_list' %}">All</a></li>
+  <li><a href="{% url 'news_list' %}?category=Music">Music</a></li>
+  <li><a href="{% url 'news_list' %}?category=Events">Events &amp; Press</a></li>
+  <li><a href="{% url 'news_list' %}?category=Festivals">Festivals</a></li>
+  <li><a href="{% url 'news_list' %}?category=Lifestyle">Lifestyle</a></li>
+  <li><a href="{% url 'news_list' %}?category=Other">Other</a></li>
+</ul>
                             </div>
                         </div>
                     </div>
