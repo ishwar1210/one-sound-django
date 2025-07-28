@@ -1,0 +1,206 @@
+{% extends "base.html" %} 
+{% load static %} 
+{% block title %}Profile{% endblock %} 
+{% block content %}
+
+<!-- Breadcumb Area -->
+<section
+  class="breadcumb-area bg-img bg-overlay"
+  style="background-image: url('{% static 'img/bg-img/breadcumb.jpg' %}')"
+>
+  <div class="bradcumbContent">
+    <p>See what's new</p>
+    <h2>Profile</h2>
+  </div>
+</section>
+
+<div class="container my-5">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3 mb-4">
+      <div class="list-group shadow-sm" id="profile-sidebar">
+        <a
+          href="#edit-profile"
+          class="list-group-item list-group-item-action active"
+          data-toggle="tab"
+          style="
+            background-color: #5f5f5f;
+            color: #fff;
+            border-color: #5f5f5f;
+            font-weight: 600;
+          "
+        >
+          Edit Profile
+        </a>
+        <a
+          href="#booking"
+          class="list-group-item list-group-item-action"
+          data-toggle="tab"
+          style="font-weight: 600; color: #000"
+        >
+          Booking
+        </a>
+      </div>
+    </div>
+    <!-- Content Area -->
+    <div class="col-md-9">
+      <div class="tab-content">
+        <!-- Edit Profile Tab -->
+        <div class="tab-pane fade show active" id="edit-profile">
+          <h4 style="font-weight: 700; margin-bottom: 25px">Edit Profile</h4>
+          <form method="post">
+            {% csrf_token %}
+            <div class="form-group mb-4">
+              <label for="username" style="font-weight: 600">Username</label>
+              <input
+                type="text"
+                class="form-control"
+                id="username"
+                name="username"
+                value="{{ user.username }}"
+                style="height: 50px; font-size: 16px"
+                readonly
+              />
+            </div>
+            <div class="form-group mb-4">
+              <label for="first_name" style="font-weight: 600"
+                >First Name</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="first_name"
+                name="first_name"
+                value="{{ user.first_name }}"
+                style="height: 50px; font-size: 16px"
+              />
+            </div>
+            <div class="form-group mb-4">
+              <label for="last_name" style="font-weight: 600">Last Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="last_name"
+                name="last_name"
+                value="{{ user.last_name }}"
+                style="height: 50px; font-size: 16px"
+              />
+            </div>
+            <div class="form-group mb-4">
+              <label for="email" style="font-weight: 600">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                value="{{ user.email }}"
+                style="height: 50px; font-size: 16px"
+              />
+            </div>
+            <div class="form-group mb-4">
+              <label for="phone" style="font-weight: 600">Phone</label>
+              <input
+                type="text"
+                class="form-control"
+                id="phone"
+                name="phone"
+                value="{{ user.profile.phone|default_if_none:'' }}"
+                style="height: 50px; font-size: 16px"
+              />
+            </div>
+            <div class="form-group mb-4">
+              <label for="dob" style="font-weight: 600">Date of Birth</label>
+              <input
+                type="date"
+                class="form-control"
+                id="dob"
+                name="dob"
+                value="{{ user.profile.dob|date:'Y-m-d' }}"
+                style="height: 50px; font-size: 16px"
+              />
+            </div>
+            <!-- Add more fields as per your user/profile model -->
+            <button type="submit" class="btn oneMusic-btn mt-30">
+              Save Changes
+            </button>
+          </form>
+        </div>
+        <!-- Booking Tab -->
+        <div class="tab-pane fade" id="booking">
+          <h4 style="font-weight: 700; margin-bottom: 25px">Your Bookings</h4>
+          {% if bookings %}
+          <div class="booking-list">
+            {% for booking in bookings %}
+            <div
+              class="single-booking p-4 mb-3"
+              style="
+                border-radius: 5px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+              "
+            >
+              <div class="d-flex justify-content-between">
+                <h5 style="font-weight: 700">{{ booking.event_name }}</h5>
+                <span
+                  class="badge"
+                  style="background-color: #5f5f5f; color: #fff"
+                  >{{ booking.date }}</span
+                >
+              </div>
+              <p
+                style="
+                  font-size: 18px;
+                  font-weight: 600;
+                  color: #ca50ca;
+                  margin-top: 10px;
+                "
+              >
+                ₹{{ booking.amount }}
+              </p>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div
+            class="alert"
+            style="
+              background-color: #f8f9fa;
+              border-left: 4px solid #ca50ca;
+              padding: 20px;
+            "
+          >
+            <p style="margin: 0; font-weight: 600">No bookings yet.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tab Switch Script -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const sidebarLinks = document.querySelectorAll("#profile-sidebar a");
+    const tabPanes = document.querySelectorAll(".tab-pane");
+    sidebarLinks.forEach((link) => {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        sidebarLinks.forEach((l) => {
+          l.classList.remove("active");
+          l.style.backgroundColor = "";
+          l.style.color = "#000";
+        });
+        this.classList.add("active");
+        this.style.backgroundColor = "#5f5f5f";
+        this.style.color = "#fff";
+        tabPanes.forEach((pane) => pane.classList.remove("show", "active"));
+        const target = document.querySelector(this.getAttribute("href"));
+        if (target) {
+          target.classList.add("show", "active");
+        }
+      });
+    });
+  });
+</script>
+
+{% endblock content %}

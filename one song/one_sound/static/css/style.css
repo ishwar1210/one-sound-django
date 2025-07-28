@@ -1558,21 +1558,32 @@ img {
 }
 
 /* :: 12.0 Login Area CSS */
-.login-content {
-  -webkit-transition-duration: 500ms;
-  transition-duration: 500ms;
-  position: relative;
-  z-index: 1;
-  background-color: #f5f9fa;
-  border: 1px solid #d8d8d8;
-  padding: 50px 100px;
-  box-shadow: 0 2px 70px 0 rgba(0, 0, 0, 0.15);
-  text-align: center;
+.login-area {
+    background: #ffffff; /* fallback for mobile */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
 }
-@media only screen and (max-width: 767px) {
-  .login-content {
-    padding: 50px 30px;
-  }
+.login-content {
+    background: rgba(255,255,255);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 rgba(229, 227, 227);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 40px 30px;
+    margin: 40px 0;
+    transition-duration: 500ms;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+@media (max-width: 991px) {
+    .login-area .col-lg-6.d-none.d-lg-block {
+        display: none !important;
+    }
+    .login-content {
+        margin: 40px auto;
+    }
 }
 .login-content h3 {
   margin-bottom: 30px;

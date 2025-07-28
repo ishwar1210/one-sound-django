@@ -42,3 +42,9 @@ def contact(request):
         mail.send(fail_silently=False)
         return render(request, 'contact.html', {'success': True})
     return render(request, 'contact.html')
+
+def profile(request):
+    if request.user.is_authenticated:
+        return render(request, 'profile.html', {'user': request.user})
+    else:
+        return redirect('login')  # Make sure you have a 'login' url

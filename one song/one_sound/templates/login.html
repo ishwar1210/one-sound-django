@@ -1,60 +1,96 @@
-{% extends "base.html" %}
-{% load static %}
-
-{% block title %}login{% endblock title %}
-
+{% extends "base.html" %} 
+{% load static %} 
+{% block title %}login{% endblock title %} 
 {% block content %}
 
 <!-- ##### Breadcumb Area Start ##### -->
-    <section class="breadcumb-area bg-img bg-overlay" style="background-image: url('{% static 'img/bg-img/breadcumb3.jpg' %}'
-    );">
-        <div class="bradcumbContent">
-            <p>See what’s new</p>
-            <h2>Login</h2>
-        </div>
-    </section>
-    <!-- ##### Breadcumb Area End ##### -->
+<section
+  class="breadcumb-area bg-img bg-overlay"
+  style="background-image: url('{% static 'img/bg-img/breadcumb3.jpg' %}')"
+>
+  <div class="bradcumbContent">
+    <p>See what’s new</p>
+    <h2>Login</h2>
+  </div>
+</section>
+<!-- ##### Breadcumb Area End ##### -->
 
-    <!-- ##### Login Area Start ##### -->
-    <section class="login-area section-padding-100">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-12 col-lg-8">
-                    <div class="login-content">
-                        <h3>Welcome Back</h3>
-                        <!-- Login Form -->
-                        <div class="login-form">
-                            <form action="" method="post">
-                                {% csrf_token %}
-                                {% if form.errors %}
-                                    <div class="alert alert-danger">
-                                        {% for field in form %}
-                                            {% for error in field.errors %}
-                                                <div>{{ error }}</div>
-                                            {% endfor %}
-                                        {% endfor %}
-                                        {% for error in form.non_field_errors %}
-                                            <div>{{ error }}</div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                                <div class="form-group">
-                                    <label for="id_username">Username</label>
-                                    <input type="text" class="form-control" id="id_username" name="username" placeholder="Enter Username" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="id_password">Password</label>
-                                    <input type="password" class="form-control" id="id_password" name="password" placeholder="Password" required>
-                                </div>
-                                <button type="submit" class="btn oneMusic-btn mt-30">Login</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- ##### Login Area Start ##### -->
+<section class="login-area section-padding-100">
+  <div class="container">
+    <div class="row align-items-center">
+      <!-- Left Side: Image -->
+      <div class="col-lg-6 d-none d-lg-block text-center">
+        <img
+          src="{% static 'img/bg-img/YoYoHoneySingh.png' %}"
+          alt="Login Art"
+          class="img-fluid"
+          style="max-width: 80%; max-height: 80vh"
+        />
+        <div style="margin-top: 24px">
+          <h2 style="color: black; font-weight: 900; margin-bottom: 0">
+            All Your Music.
+          </h2>
+          <div
+            style="
+              color: #ca50caff;
+              font-style: italic;
+              font-size: 2rem;
+              font-weight: 600;
+            "
+          >
+            Anytime, anywhere.
+          </div>
         </div>
-    </section>
-    <!-- ##### Login Area End ##### -->
-
+      </div>
+      <!-- Right Side: Login Form -->
+      <div class="col-12 col-lg-6">
+        <div class="login-content">
+          <h3>Welcome Back</h3>
+          <!-- Login Form -->
+          <div class="login-form">
+            <form action="" method="post">
+              {% csrf_token %} {% if form.errors %}
+              <div class="alert alert-danger">
+                {% for field in form %} {% for error in field.errors %}
+                <div>{{ error }}</div>
+                {% endfor %} {% endfor %} {% for error in form.non_field_errors%}
+                <div>{{ error }}</div>
+                {% endfor %}
+              </div>
+              {% endif %}
+              <div class="form-group">
+                <label for="id_username">Username</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="id_username"
+                  name="username"
+                  placeholder="Enter Username"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="id_password">Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="id_password"
+                  name="password"
+                  placeholder="Password"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn oneMusic-btn mt-30">
+                Login
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ##### Login Area End ##### -->
 
 {% endblock content %}

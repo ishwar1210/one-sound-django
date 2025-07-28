@@ -31,6 +31,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('register/', views.register, name='register'),
     path('contact/', views.contact, name='contact'),
+    path('profile/', views.profile, name='profile'),
 ]
 
 if settings.DEBUG:
