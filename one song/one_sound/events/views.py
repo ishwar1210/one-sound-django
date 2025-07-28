@@ -1,5 +1,18 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Event
+from django.http import JsonResponse
+from django.core.mail import send_mail
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from .models import Event
+from django.contrib.auth.models import User
+import qrcode
+import base64
+from io import BytesIO
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import format_html
+from email.mime.image import MIMEImage
 
 
 # Create your views here.
@@ -18,3 +31,46 @@ def event_detail(request, event_id):
         'event_price_paise': event_price_paise,
         'is_upcoming': is_upcoming
     })
+
+@csrf_exempt
+@login_required
+def send_booking_email(request):
+    if request.method == "POST":
+        event_id = request.POST.get('event_id')
+        event = Event.objects.get(pk=event_id)
+        user = request.user
+
+        # Generate QR code
+        payment_id = request.POST.get('payment_id')
+        qr_data = f"User: {user.username}, Event: {event.event_name}, Date: {event.event_date}, Venue: {event.venue}, Payment ID: {payment_id}"
+        qr = qrcode.make(qr_data)
+        buffer = BytesIO()
+        qr.save(buffer, format="PNG")
+        buffer.seek(0)
+
+        # Email content with embedded QR as attachment
+        html_content = f"""
+        <p>Dear {user.first_name or user.username},</p>
+        <p>Your booking for <b>{event.event_name}</b> on <b>{event.event_date}</b> at <b>{event.venue}</b> is confirmed.</p>
+        <p>Show this QR code at entry:</p>
+        <img src="cid:qr_code_image" alt="QR Code" style="width:200px;height:200px;" />
+        <p>Thank you!</p>
+        """
+
+        email = EmailMultiAlternatives(
+            subject=f'Booking Confirmed for {event.event_name}',
+            body="Your booking is confirmed. Please see the QR code in the email.",
+            from_email=None,
+            to=[user.email]
+        )
+        email.attach_alternative(html_content, "text/html")
+
+        # Attach QR code image with Content-ID
+        qr_image = MIMEImage(buffer.getvalue(), _subtype="png")
+        qr_image.add_header('Content-ID', '<qr_code_image>')
+        qr_image.add_header('Content-Disposition', 'inline', filename="qrcode.png")
+        email.attach(qr_image)
+
+        email.send()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'fail'}, status=400)
