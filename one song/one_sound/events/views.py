@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Event
+from .models import Event, Booking
 from django.http import JsonResponse
 from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_exempt
@@ -37,12 +37,21 @@ def event_detail(request, event_id):
 def send_booking_email(request):
     if request.method == "POST":
         event_id = request.POST.get('event_id')
+        payment_id = request.POST.get('payment_id')
+        qty = int(request.POST.get('qty', 1))
         event = Event.objects.get(pk=event_id)
         user = request.user
 
+        # YAHAN BOOKING CREATE KARO
+        Booking.objects.create(
+            user=user,
+            event=event,
+            payment_id=payment_id,
+            qty=qty
+        )
+
         # Generate QR code
-        payment_id = request.POST.get('payment_id')
-        qr_data = f"User: {user.username}, Event: {event.event_name}, Date: {event.event_date}, Venue: {event.venue}, Payment ID: {payment_id}"
+        qr_data = f"User: {user.first_name or user.username} {user.last_name}\n\n Event: {event.event_name}\n\n Date: {event.event_date}\n\n Venue: {event.venue}\n\n Qty: {qty}\n\n Payment ID: {payment_id}"
         qr = qrcode.make(qr_data)
         buffer = BytesIO()
         qr.save(buffer, format="PNG")

@@ -3,6 +3,8 @@ from .forms import RegisterForm
 from django.contrib.auth.models import User
 from django.contrib.auth import logout, login
 from django.core.mail import send_mail, EmailMessage
+from django.contrib.auth.decorators import login_required
+from events.models import Event, Booking
 
 def register(request):
     if request.method == 'POST':
@@ -43,8 +45,14 @@ def contact(request):
         return render(request, 'contact.html', {'success': True})
     return render(request, 'contact.html')
 
+@login_required
 def profile(request):
-    if request.user.is_authenticated:
-        return render(request, 'profile.html', {'user': request.user})
-    else:
-        return redirect('login')  # Make sure you have a 'login' url
+    user = request.user
+    bookings = Booking.objects.filter(user=user).order_by('-date')
+    # Har booking ke liye amount calculate karo
+    for booking in bookings:
+        booking.amount = booking.event.price * booking.qty
+    return render(request, 'profile.html', {
+        'user': user,
+        'bookings': bookings,
+    })
