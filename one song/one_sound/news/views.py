@@ -10,7 +10,7 @@ def news(request):
 def news_list(request):
     category = request.GET.get('category')
     if category:
-        news_list = News.objects.filter(category=category)
+        news_list = News.objects.filter(category=category).order_by("-published_date")
     else:
-        news_list = News.objects.all()
+        news_list = News.objects.all().order_by("-published_date")
     return render(request, 'news.html', {'news_list': news_list, 'selected_category': category})

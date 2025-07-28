@@ -5,6 +5,7 @@ from django.contrib.auth import logout, login
 from django.core.mail import send_mail, EmailMessage
 from django.contrib.auth.decorators import login_required
 from events.models import Event, Booking
+from django.contrib.auth import update_session_auth_hash
 
 def register(request):
     if request.method == 'POST':
@@ -48,15 +49,46 @@ def contact(request):
 @login_required
 def profile(request):
     user = request.user
+    message = None
+    password_message = None
+    
     if request.method == "POST":
+        # Handle profile updates
         user.first_name = request.POST.get('first_name', user.first_name)
         user.last_name = request.POST.get('last_name', user.last_name)
         user.email = request.POST.get('email', user.email)
         user.save()
+        message = "Profile updated successfully!"
+        
+        # Handle password change
+        current_password = request.POST.get('current_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        if current_password and new_password and confirm_password:
+            # Check if current password is correct
+            if user.check_password(current_password):
+                # Check if new password and confirmation match
+                if new_password == confirm_password:
+                    # Set new password
+                    user.set_password(new_password)
+                    user.save()
+                    password_message = "Password changed successfully!"
+                    # Keep user logged in with new password
+                    update_session_auth_hash(request, user)
+                else:
+                    password_message = "New password and confirmation don't match!"
+            else:
+                password_message = "Current password is incorrect!"
+    
+    # Get bookings
     bookings = Booking.objects.filter(user=user).order_by('-date')
     for booking in bookings:
         booking.amount = booking.event.price * booking.qty
+        
     return render(request, 'profile.html', {
         'user': user,
         'bookings': bookings,
+        'message': message,
+        'password_message': password_message,
     })

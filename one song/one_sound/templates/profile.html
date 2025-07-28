@@ -40,16 +40,6 @@
         >
           Booking
         </a>
-        {% if user.is_staff or user.is_superuser %}
-        <a
-          href="/admin/"
-          class="list-group-item list-group-item-action"
-          style="font-weight: 600; color: #000000ff"
-          target="_blank"
-        >
-          Admin Panel
-        </a>
-        {% endif %}
       </div>
     </div>
     <!-- Content Area -->
@@ -58,6 +48,11 @@
         <!-- Edit Profile Tab -->
         <div class="tab-pane fade show active" id="edit-profile">
           <h4 style="font-weight: 700; margin-bottom: 25px">Edit Profile</h4>
+          {% if message %}
+          <div class="alert alert-success mb-4">{{ message }}</div>
+          {% endif %} {% if password_message %}
+          <div class="alert alert-info mb-4">{{ password_message }}</div>
+          {% endif %}
           <form method="post">
             {% csrf_token %}
             <div class="form-group mb-4">
@@ -107,7 +102,49 @@
                 style="height: 50px; font-size: 16px"
               />
             </div>
-            <!-- Add more fields as per your user/profile model -->
+            <h5 style="font-weight: 600; margin-bottom: 15px">
+              Change Password
+            </h5>
+
+            <div class="form-group mb-4">
+              <label for="current_password" style="font-weight: 600"
+                >Current Password</label
+              >
+              <input
+                type="password"
+                class="form-control"
+                id="current_password"
+                name="current_password"
+                style="height: 50px; font-size: 16px"
+              />
+            </div>
+
+            <div class="form-group mb-4">
+              <label for="new_password" style="font-weight: 600"
+                >New Password</label
+              >
+              <input
+                type="password"
+                class="form-control"
+                id="new_password"
+                name="new_password"
+                style="height: 50px; font-size: 16px"
+              />
+            </div>
+
+            <div class="form-group mb-4">
+              <label for="confirm_password" style="font-weight: 600"
+                >Confirm New Password</label
+              >
+              <input
+                type="password"
+                class="form-control"
+                id="confirm_password"
+                name="confirm_password"
+                style="height: 50px; font-size: 16px"
+              />
+            </div>
+
             <button type="submit" class="btn oneMusic-btn mt-30">
               Save Changes
             </button>
