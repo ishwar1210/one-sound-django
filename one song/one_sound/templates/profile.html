@@ -40,6 +40,16 @@
         >
           Booking
         </a>
+        {% if user.is_staff or user.is_superuser %}
+        <a
+          href="/admin/"
+          class="list-group-item list-group-item-action"
+          style="font-weight: 600; color: #000000ff"
+          target="_blank"
+        >
+          Admin Panel
+        </a>
+        {% endif %}
       </div>
     </div>
     <!-- Content Area -->
@@ -94,28 +104,6 @@
                 id="email"
                 name="email"
                 value="{{ user.email }}"
-                style="height: 50px; font-size: 16px"
-              />
-            </div>
-            <div class="form-group mb-4">
-              <label for="phone" style="font-weight: 600">Phone</label>
-              <input
-                type="text"
-                class="form-control"
-                id="phone"
-                name="phone"
-                value="{{ user.profile.phone|default_if_none:'' }}"
-                style="height: 50px; font-size: 16px"
-              />
-            </div>
-            <div class="form-group mb-4">
-              <label for="dob" style="font-weight: 600">Date of Birth</label>
-              <input
-                type="date"
-                class="form-control"
-                id="dob"
-                name="dob"
-                value="{{ user.profile.dob|date:'Y-m-d' }}"
                 style="height: 50px; font-size: 16px"
               />
             </div>

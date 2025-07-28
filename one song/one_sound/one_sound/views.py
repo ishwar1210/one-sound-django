@@ -48,8 +48,12 @@ def contact(request):
 @login_required
 def profile(request):
     user = request.user
+    if request.method == "POST":
+        user.first_name = request.POST.get('first_name', user.first_name)
+        user.last_name = request.POST.get('last_name', user.last_name)
+        user.email = request.POST.get('email', user.email)
+        user.save()
     bookings = Booking.objects.filter(user=user).order_by('-date')
-    # Har booking ke liye amount calculate karo
     for booking in bookings:
         booking.amount = booking.event.price * booking.qty
     return render(request, 'profile.html', {
