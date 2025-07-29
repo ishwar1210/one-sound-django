@@ -1,10 +1,7 @@
 from django.shortcuts import render
-from albums.models import Album, FeaturedAlbum, WeeksTop, NewHit, PopularAlbum  # Import from albums app
+from albums.models import Album, FeaturedAlbum, WeeksTop, NewHit, PopularAlbum
 from events.models import Event
 from news.models import News
-
-# Create your views here.
-
 
 def index(request):
     albums = Album.objects.all()[:6]
@@ -26,6 +23,5 @@ def index(request):
     }
     return render(request, 'index.html', context)
 
-def register(request):
-    return render(request, 'register.html')
+
 
