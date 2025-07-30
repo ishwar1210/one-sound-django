@@ -13,6 +13,7 @@ from io import BytesIO
 from django.core.mail import EmailMultiAlternatives
 from django.utils.html import format_html
 from email.mime.image import MIMEImage
+from datetime import date
 
 
 # Create your views here.
@@ -20,7 +21,7 @@ def events(request):
     events = Event.objects.all().order_by('-event_date')  # Sort by newest events first
     return render(request, 'event.html', {'events': events})
 
-from datetime import date
+
 def event_detail(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     is_upcoming = event.event_date >= date.today()
@@ -31,6 +32,7 @@ def event_detail(request, event_id):
         'event_price_paise': event_price_paise,
         'is_upcoming': is_upcoming
     })
+
 
 @csrf_exempt
 @login_required
@@ -83,3 +85,13 @@ def send_booking_email(request):
         email.send()
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'fail'}, status=400)
+
+
+def event_list(request):
+    today = date.today()
+    upcoming_events = Event.objects.filter(event_date__gte=today).order_by('event_date')
+    passed_events = Event.objects.filter(event_date__lt=today).order_by('-event_date')
+    return render(request, 'event.html', {
+        'upcoming_events': upcoming_events,
+        'passed_events': passed_events,
+    })

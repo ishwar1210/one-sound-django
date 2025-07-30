@@ -16,8 +16,9 @@
     <!-- ##### Events Area Start ##### -->
     <section class="events-area section-padding-100">
         <div class="container">
+            <h3 class="mb-4" style="font-weight:700;">Upcoming Events</h3>
             <div class="row">
-                {% for event in events %}
+                {% for event in upcoming_events %}
                 <!-- Single Event Area -->
                 <div class="col-12 col-md-6 col-lg-6">
                     <div class="single-event-area mb-30">
@@ -34,6 +35,36 @@
                         </div>
                     </div>
                 </div>
+                {% empty %}
+                <div class="col-12"><p>No upcoming events.</p></div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="events-area section-padding-100 pt-0">
+        <div class="container">
+            <h3 class="mb-4" style="font-weight:700;">Passed Events</h3>
+            <div class="row">
+                {% for event in passed_events %}
+                <!-- Single Event Area -->
+                <div class="col-12 col-md-6 col-lg-6">
+                    <div class="single-event-area mb-30">
+                        <div class="event-thumbnail" style="object-fit: cover; height: 250px;">
+                            <a href="{% url 'event_detail' event.id %}"><img src="{{ event.event_image.url }}" alt=""></a>
+                        </div>
+                        <div class="event-text">
+                            <a href="{% url 'event_detail' event.id %}"><h4>{{ event.event_name }}</h4></a>
+                            <div class="event-meta-data">
+                                <a href="{% url 'event_detail' event.id %}" class="event-place">{{ event.venue }}</a>
+                                <a href="{% url 'event_detail' event.id %}" class="event-date">{{ event.event_date }}</a>
+                            </div>
+                            <a href="{% url 'event_detail' event.id %}" class="btn see-more-btn">See Event</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12"><p>No passed events.</p></div>
                 {% endfor %}
             </div>
         </div>
